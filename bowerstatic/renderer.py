@@ -35,8 +35,10 @@ class Renderer(object):
 def make_renderer(renderer):
     if isinstance(renderer, string_types):
         def string_renderer(resource):
-            return renderer.format(url=resource.url(),
-                                   content=resource.content())
+            if '{content}' in renderer:
+                return renderer.format(content=resource.content())
+            else:
+                return renderer.format(url=resource.url())
         return string_renderer
 
     if callable(renderer):
