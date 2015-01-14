@@ -1,0 +1,7 @@
+{
+  "name": "favicon_main",
+  "version": "1.0.0",
+  "main": [
+    "dist/favicon.ico"
+  ]
+}

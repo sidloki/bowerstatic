@@ -744,3 +744,27 @@ def test_injector_inline_renderer():
     assert response.body == (
         b'<html><head><script type="text/javascript">/* jquery.js 2.1.1 */\n'
         b'</script></head><body>Hello!</body></html>')
+
+
+def test_injector_favicon_renderer():
+    bower = bowerstatic.Bower()
+
+    components = bower.components('components', os.path.join(
+        os.path.dirname(__file__), 'bower_components'))
+
+    def wsgi(environ, start_response):
+        start_response('200 OK', [('Content-Type', 'text/html;charset=UTF-8')])
+        include = components.includer(environ)
+        include('favicon_main')
+        return [b'<html><head></head><body>Hello!</body></html>']
+
+    injector = bower.injector(wsgi)
+
+    c = Client(injector)
+
+    response = c.get('/')
+    assert response.body == (
+        b'<html><head>'
+        b'<link rel="shortcut icon" '
+        b'href="/bowerstatic/components/favicon_main/1.0.0/dist/favicon.ico">'
+        b'</head><body>Hello!</body></html>')
